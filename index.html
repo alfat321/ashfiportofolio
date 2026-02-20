@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sayyidatul Ashfiya' | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #080808;
+            --bg-card: #0a0a0a;
+            --fg-primary: #ffffff;
+            --fg-secondary: #909090;
+            --accent: #e63946;
+            --accent-light: #ff4d5a;
+            --gold: #d4a853;
+            --gold-light: #e6c547;
+            --border: rgba(255,255,255,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-primary); color: var(--fg-primary); overflow-x: hidden; line-height: 1.7; }
+        .font-display { font-family: 'Playfair Display', serif; }
+
+        /* LIGHTING */
+        .lighting-layer { position: fixed; pointer-events: none; z-index: 0; }
+        .spotlight-main { top: -15%; left: 50%; transform: translateX(-50%); width: 1600px; height: 1000px; background: radial-gradient(ellipse at center, rgba(230, 57, 70, 0.4) 0%, rgba(230, 57, 70, 0.18) 20%, rgba(230, 57, 70, 0.06) 40%, transparent 60%); filter: blur(30px); animation: pulseMain 8s ease-in-out infinite; }
+        .spotlight-left { top: 10%; left: -10%; width: 800px; height: 800px; background: radial-gradient(circle at center, rgba(212, 168, 83, 0.35) 0%, rgba(212, 168, 83, 0.12) 35%, transparent 65%); filter: blur(50px); animation: floatLeft 10s ease-in-out infinite; }
+        .spotlight-right { top: 30%; right: -15%; width: 900px; height: 900px; background: radial-gradient(circle at center, rgba(230, 57, 70, 0.3) 0%, rgba(230, 57, 70, 0.1) 40%, transparent 60%); filter: blur(70px); animation: floatRight 12s ease-in-out infinite; }
+        .spotlight-bottom { bottom: 0; left: 20%; width: 800px; height: 500px; background: radial-gradient(ellipse at center, rgba(212, 168, 83, 0.25) 0%, transparent 60%); filter: blur(90px); }
+        @keyframes pulseMain { 0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); } 50% { opacity: 0.85; transform: translateX(-50%) scale(1.08); } }
+        @keyframes floatLeft { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 30px); } }
+        @keyframes floatRight { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-30px, 40px); } }
+        .vignette { position: fixed; inset: 0; background: radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,0.9) 100%); pointer-events: none; z-index: 1; }
+        .grain { position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); opacity: 0.035; pointer-events: none; z-index: 2; }
+
+        /* Navigation */
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.98), transparent); backdrop-filter: blur(12px); }
+        .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; background: linear-gradient(135deg, var(--fg-primary), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: default; user-select: none; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-link { color: var(--fg-secondary); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.3s ease; position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s ease; }
+        .nav-link:hover { color: var(--fg-primary); }
+        .nav-link:hover::after { width: 100%; }
+        .admin-badge { display: none; padding: 0.3rem 0.8rem; background: rgba(230, 57, 70, 0.15); border: 1px solid var(--accent); border-radius: 2px; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent-light); }
+        .admin-badge.visible { display: inline-block; }
+        .admin-toggle { position: fixed; bottom: 2rem; right: 2rem; z-index: 150; display: none; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+        .admin-toggle.visible { display: flex; }
+        .admin-logout { background: transparent; border: 1px solid var(--border); padding: 0.5rem 1rem; font-size: 0.7rem; color: var(--fg-secondary); cursor: pointer; transition: all 0.3s ease; border-radius: 2px; font-family: inherit; }
+        .admin-logout:hover { border-color: #ff4757; color: #ff4757; }
+        .mobile-menu-btn { display: none; background: none; border: 1px solid var(--border); padding: 0.5rem; cursor: pointer; }
+        .mobile-menu-btn svg { color: var(--fg-primary); }
+
+        @media (max-width: 900px) {
+            .nav-links { position: fixed; top: 70px; left: 0; right: 0; background: rgba(0,0,0,0.98); flex-direction: column; padding: 2rem; gap: 1.5rem; transform: translateY(-100%); opacity: 0; transition: all 0.3s ease; z-index: 99; }
+            .nav-links.active { transform: translateY(0); opacity: 1; }
+            .mobile-menu-btn { display: block; }
+        }
+
+        /* Hero */
+        .hero { min-height: 100vh; position: relative; display: flex; align-items: center; z-index: 10; }
+        .hero-content { padding: 2rem; max-width: 900px; margin: 0 auto; text-align: center; }
+        .hero-name { font-size: clamp(3rem, 10vw, 7rem); font-weight: 700; line-height: 1; margin-bottom: 1.5rem; background: linear-gradient(135deg, #ffffff 0%, var(--gold) 50%, #ffffff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 100px rgba(212, 168, 83, 0.5); }
+        .hero-title { font-size: clamp(1rem, 2.5vw, 1.4rem); color: var(--fg-secondary); margin-bottom: 0.5rem; letter-spacing: 0.1em; }
+        .hero-subtitle { font-size: 0.9rem; color: var(--accent); margin-bottom: 2.5rem; }
+        .hero-description-wrapper { position: relative; max-width: 650px; margin: 0 auto 3rem; padding: 1.5rem 2rem; background: rgba(230, 57, 70, 0.03); border: 1px solid rgba(230, 57, 70, 0.15); border-radius: 4px; transition: all 0.4s ease; }
+        .hero-description-wrapper:hover { border-color: rgba(230, 57, 70, 0.3); background: rgba(230, 57, 70, 0.05); }
+        .hero-description-text { font-size: 1.05rem; color: var(--fg-secondary); line-height: 1.9; font-style: italic; }
+        .edit-desc-btn { position: absolute; top: -12px; right: 20px; padding: 0.4rem 1rem; background: var(--bg-secondary); border: 1px solid var(--accent); border-radius: 2px; color: var(--accent-light); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; font-family: inherit; display: none; }
+        .edit-desc-btn.visible { display: block; }
+        .edit-desc-btn:hover { background: var(--accent); color: white; }
+        .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 1rem 2.5rem; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; border: none; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); text-decoration: none; display: inline-block; position: relative; overflow: hidden; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent), #c62828); color: white; }
+        .btn-primary::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transition: left 0.6s ease; }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 25px 60px rgba(230, 57, 70, 0.45); }
+        .btn-secondary { background: transparent; color: var(--fg-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(212, 168, 83, 0.05); }
+        .btn-small { padding: 0.5rem 1rem; font-size: 0.7rem; }
+
+        /* Sections */
+        section { position: relative; z-index: 10; padding: 6rem 2rem; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-label { font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; display: block; }
+        .section-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; margin-bottom: 1rem; }
+        .section-line { width: 80px; height: 2px; background: linear-gradient(90deg, var(--accent), var(--gold)); margin: 0 auto; }
+
+        /* Biodata */
+        .biodata-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 320px 1fr; gap: 4rem; align-items: start; }
+        .biodata-photo { position: relative; }
+        .photo-frame { aspect-ratio: 3/4; background: linear-gradient(135deg, rgba(230, 57, 70, 0.08), rgba(212, 168, 83, 0.08)); border: 1px solid rgba(230, 57, 70, 0.2); border-radius: 4px; overflow: hidden; position: relative; cursor: default; transition: all 0.4s ease; }
+        .photo-frame.editable { cursor: pointer; }
+        .photo-frame.editable:hover { border-color: rgba(230, 57, 70, 0.5); }
+        .photo-frame::before { content: ''; position: absolute; inset: -4px; background: linear-gradient(135deg, var(--accent), var(--gold)); z-index: -1; opacity: 0.3; filter: blur(25px); transition: opacity 0.4s ease; }
+        .photo-frame.editable:hover::before { opacity: 0.5; }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #0a0a0a, #111111); color: var(--fg-secondary); gap: 1rem; padding: 2rem; text-align: center; }
+        .photo-placeholder svg { opacity: 0.5; }
+        .photo-placeholder span { font-size: 0.8rem; }
+        .photo-edit-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; gap: 0.5rem; pointer-events: none; }
+        .photo-frame.editable .photo-edit-overlay { pointer-events: auto; }
+        .photo-frame.editable:hover .photo-edit-overlay { opacity: 1; }
+        .photo-edit-overlay svg { color: var(--gold-light); margin-bottom: 0.5rem; }
+        .photo-edit-overlay span { font-size: 0.75rem; color: var(--fg-primary); }
+        #profilePhotoInput { display: none; }
+        .biodata-info { display: grid; gap: 1.5rem; }
+        .info-item { padding: 1.5rem; background: rgba(230, 57, 70, 0.02); border: 1px solid rgba(230, 57, 70, 0.1); border-radius: 4px; transition: all 0.3s ease; position: relative; }
+        .info-item:hover { border-color: rgba(230, 57, 70, 0.25); background: rgba(230, 57, 70, 0.04); }
+        .info-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+        .info-value { font-size: 1.1rem; color: var(--fg-primary); }
+        .info-edit-btn { position: absolute; top: 1rem; right: 1rem; padding: 0.3rem 0.6rem; background: transparent; border: 1px solid transparent; border-radius: 2px; color: var(--fg-secondary); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; font-family: inherit; display: none; }
+        .info-edit-btn.visible { display: block; }
+        .info-edit-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+
+        /* Education */
+        .education-container { max-width: 900px; margin: 0 auto; }
+        .education-list { display: flex; flex-direction: column; gap: 1rem; }
+        .education-item { display: flex; gap: 1.5rem; padding: 1.5rem; background: rgba(230, 57, 70, 0.02); border: 1px solid var(--border); border-radius: 4px; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; }
+        .education-item:hover { border-color: rgba(230, 57, 70, 0.3); background: rgba(230, 57, 70, 0.03); transform: translateX(10px); }
+        .education-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--accent), var(--gold)); opacity: 0; transition: opacity 0.3s ease; }
+        .education-item:hover::before { opacity: 1; }
+        .education-year { flex-shrink: 0; width: 140px; font-size: 0.85rem; color: var(--gold-light); font-weight: 500; letter-spacing: 0.05em; }
+        .education-content { flex: 1; }
+        .education-name { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--fg-primary); }
+        .education-location { font-size: 0.85rem; color: var(--fg-secondary); }
+        .education-actions { display: none; gap: 0.5rem; margin-top: 0.8rem; }
+        .education-actions.visible { display: flex; }
+        .edu-btn { padding: 0.4rem 0.8rem; font-size: 0.65rem; background: transparent; border: 1px solid var(--border); color: var(--fg-secondary); cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .edu-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+        .edu-btn.delete:hover { border-color: #ff4757; color: #ff4757; }
+        .add-education-btn { display: none; align-items: center; justify-content: center; gap: 0.8rem; padding: 1.5rem; background: transparent; border: 2px dashed var(--border); border-radius: 4px; cursor: pointer; transition: all 0.3s ease; color: var(--fg-secondary); font-family: inherit; font-size: 0.9rem; }
+        .add-education-btn.visible { display: flex; }
+        .add-education-btn:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(212, 168, 83, 0.03); }
+
+        /* Portfolio */
+        .management-container { max-width: 1400px; margin: 0 auto; }
+        .tabs-container { display: flex; gap: 0.5rem; margin-bottom: 2rem; overflow-x: auto; padding-bottom: 1rem; scrollbar-width: none; }
+        .tabs-container::-webkit-scrollbar { display: none; }
+        .tab-btn { padding: 0.8rem 1.5rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); color: var(--fg-secondary); font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; font-family: inherit; letter-spacing: 0.05em; }
+        .tab-btn:hover { color: var(--fg-primary); border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.03); }
+        .tab-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Folder Header */
+        .folder-header { display: none; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem 1.5rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 4px; }
+        .folder-header.visible { display: flex; }
+        .folder-back-btn { padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--border); color: var(--fg-secondary); cursor: pointer; transition: all 0.3s ease; font-family: inherit; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .folder-back-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+        .folder-name { font-size: 1rem; color: var(--gold-light); }
+        .folder-actions { margin-left: auto; display: flex; gap: 0.5rem; }
+        .folder-btn { padding: 0.4rem 0.8rem; font-size: 0.65rem; background: transparent; border: 1px solid var(--border); color: var(--fg-secondary); cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .folder-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+        .folder-btn.danger:hover { border-color: #ff4757; color: #ff4757; }
+
+        /* Add Folder Button */
+        .add-folder-btn { display: none; align-items: center; gap: 0.5rem; padding: 1rem 1.5rem; background: transparent; border: 2px dashed var(--border); border-radius: 4px; cursor: pointer; transition: all 0.3s ease; color: var(--fg-secondary); font-family: inherit; font-size: 0.85rem; margin-bottom: 1.5rem; }
+        .add-folder-btn.visible { display: flex; }
+        .add-folder-btn:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(212, 168, 83, 0.03); }
+
+        /* Folder Card */
+        .folder-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 4px; padding: 2rem; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; }
+        .folder-card:hover { border-color: rgba(212, 168, 83, 0.4); transform: translateY(-5px); background: rgba(212, 168, 83, 0.03); }
+        .folder-card-content { text-align: center; }
+        .folder-card svg { color: var(--gold); margin-bottom: 1rem; }
+        .folder-card-name { font-size: 1rem; font-weight: 500; margin-bottom: 0.3rem; }
+        .folder-card-count { font-size: 0.75rem; color: var(--fg-secondary); }
+        .folder-card-actions { position: absolute; top: 0.8rem; right: 0.8rem; display: none; gap: 0.3rem; }
+        .folder-card:hover .folder-card-actions { display: flex; }
+        .folder-card-btn { padding: 0.3rem 0.6rem; font-size: 0.6rem; background: rgba(0,0,0,0.8); border: 1px solid var(--border); color: var(--fg-secondary); cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .folder-card-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+        .folder-card-btn.danger:hover { border-color: #ff4757; color: #ff4757; }
+
+        /* Items Grid */
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .item-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
+        .item-card:hover { transform: translateY(-8px); border-color: rgba(230, 57, 70, 0.4); box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 40px rgba(230, 57, 70, 0.1); }
+        .item-image { aspect-ratio: 16/10; background: linear-gradient(135deg, #0f0f0f, #151515); position: relative; overflow: hidden; }
+        .item-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .item-card:hover .item-image img { transform: scale(1.08); }
+        .item-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--fg-secondary); opacity: 0.4; }
+        .item-content { padding: 1.5rem; }
+        .item-category { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.5rem; }
+        .item-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .item-desc { font-size: 0.85rem; color: var(--fg-secondary); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .item-year { font-size: 0.75rem; color: var(--fg-secondary); margin-top: 0.5rem; opacity: 0.7; }
+        .item-badge { display: inline-block; padding: 0.2rem 0.5rem; background: rgba(230, 57, 70, 0.15); border-radius: 2px; font-size: 0.6rem; color: var(--accent-light); margin-left: 0.5rem; }
+        .item-actions { display: none; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .item-actions.visible { display: flex; }
+        .item-btn { padding: 0.5rem 1rem; font-size: 0.7rem; background: transparent; border: 1px solid var(--border); color: var(--fg-secondary); cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .item-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+        .item-btn.delete:hover { border-color: #ff4757; color: #ff4757; }
+
+        /* Add New Button */
+        .add-new-card { display: none; background: transparent; border: 2px dashed var(--border); border-radius: 4px; min-height: 280px; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; }
+        .add-new-card.visible { display: flex; }
+        .add-new-card:hover { border-color: var(--accent); background: rgba(230, 57, 70, 0.03); }
+        .add-icon { width: 56px; height: 56px; border: 2px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; transition: all 0.3s ease; }
+        .add-new-card:hover .add-icon { border-color: var(--accent); background: var(--accent); }
+        .add-new-card:hover .add-icon svg { color: white; }
+        .add-text { color: var(--fg-secondary); font-size: 0.85rem; }
+
+        /* Skills */
+        .skills-container { max-width: 1000px; margin: 0 auto; }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+        .skill-card { background: rgba(230, 57, 70, 0.02); border: 1px solid var(--border); border-radius: 4px; padding: 2rem 1.5rem; text-align: center; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden; }
+        .skill-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--gold)); transform: scaleX(0); transition: transform 0.4s ease; }
+        .skill-card:hover { border-color: rgba(230, 57, 70, 0.4); transform: translateY(-5px); background: rgba(230, 57, 70, 0.04); }
+        .skill-card:hover::before { transform: scaleX(1); }
+        .skill-icon { width: 48px; height: 48px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; background: rgba(230, 57, 70, 0.08); border-radius: 50%; }
+        .skill-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .skill-level { font-size: 0.7rem; color: var(--gold-light); letter-spacing: 0.1em; text-transform: uppercase; }
+        .skill-actions { display: none; margin-top: 1rem; gap: 0.5rem; justify-content: center; }
+        .skill-actions.visible { display: flex; }
+        .skill-delete { padding: 0.4rem 0.8rem; font-size: 0.65rem; background: transparent; border: 1px solid var(--border); color: var(--fg-secondary); cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .skill-delete:hover { border-color: #ff4757; color: #ff4757; }
+        .add-skill-card { display: none; background: transparent; border: 2px dashed var(--border); border-radius: 4px; padding: 2rem 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease; min-height: 140px; flex-direction: column; align-items: center; justify-content: center; }
+        .add-skill-card.visible { display: flex; }
+        .add-skill-card:hover { border-color: var(--gold); background: rgba(212, 168, 83, 0.03); }
+        .add-skill-card svg { color: var(--fg-secondary); margin-bottom: 0.5rem; transition: color 0.3s ease; }
+        .add-skill-card:hover svg { color: var(--gold-light); }
+
+        /* Contact */
+        .contact-container { max-width: 900px; margin: 0 auto; text-align: center; }
+        .contact-text { color: var(--fg-secondary); font-size: 1.1rem; margin-bottom: 3rem; line-height: 1.9; }
+        .contact-links { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; }
+        .contact-link { display: flex; align-items: center; gap: 0.8rem; padding: 1rem 1.8rem; background: rgba(230, 57, 70, 0.03); border: 1px solid var(--border); border-radius: 50px; text-decoration: none; color: var(--fg-primary); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .contact-link:hover { border-color: var(--accent); background: rgba(230, 57, 70, 0.08); transform: translateY(-4px); box-shadow: 0 20px 50px rgba(230, 57, 70, 0.15); }
+        .contact-link svg { width: 22px; height: 22px; }
+        .contact-link span { font-size: 0.85rem; font-weight: 500; }
+
+        /* Footer */
+        footer { padding: 3rem 2rem; text-align: center; border-top: 1px solid var(--border); position: relative; z-index: 10; }
+        footer p { color: var(--fg-secondary); font-size: 0.85rem; }
+
+        /* Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); z-index: 200; opacity: 0; visibility: hidden; transition: all 0.4s ease; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { background: var(--bg-secondary); border: 1px solid rgba(230, 57, 70, 0.2); border-radius: 6px; width: 100%; max-width: 550px; max-height: 90vh; overflow-y: auto; transform: scale(0.92) translateY(30px); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+        .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-size: 1.2rem; font-weight: 600; color: var(--accent-light); }
+        .modal-close { width: 40px; height: 40px; background: transparent; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; }
+        .modal-close:hover { background: var(--accent); border-color: var(--accent); }
+        .modal-close:hover svg { color: white; }
+        .modal-body { padding: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 0.9rem 1rem; background: rgba(230, 57, 70, 0.03); border: 1px solid var(--border); border-radius: 3px; color: var(--fg-primary); font-family: inherit; font-size: 0.95rem; transition: all 0.3s ease; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent); background: rgba(230, 57, 70, 0.06); }
+        .form-textarea { min-height: 120px; resize: vertical; }
+        .form-select { cursor: pointer; }
+        .form-select option { background: var(--bg-primary); color: var(--fg-primary); }
+        .form-submit { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--accent), #c62828); border: none; color: white; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s ease; }
+        .form-submit:hover { box-shadow: 0 15px 40px rgba(230, 57, 70, 0.35); transform: translateY(-2px); }
+        .login-error { color: #ff4757; font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+        .login-error.visible { display: block; }
+        .login-hint { color: var(--fg-secondary); font-size: 0.75rem; margin-top: 1rem; opacity: 0.6; }
+
+        /* Multi File Upload */
+        .file-upload { border: 2px dashed var(--border); border-radius: 4px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+        .file-upload:hover { border-color: var(--accent); background: rgba(230, 57, 70, 0.03); }
+        .file-upload input { display: none; }
+        .file-upload-text { color: var(--fg-secondary); font-size: 0.85rem; }
+        .preview-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.5rem; margin-top: 1rem; }
+        .preview-item { position: relative; aspect-ratio: 1; border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-remove { position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; background: rgba(0,0,0,0.8); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .preview-remove svg { color: #ff4757; width: 12px; height: 12px; }
+        .file-count { font-size: 0.75rem; color: var(--gold-light); margin-top: 0.5rem; }
+
+        /* Detail Modal - Large */
+        .detail-modal { max-width: 95vw; max-height: 95vh; width: 1100px; }
+        .detail-content { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; }
+        .detail-gallery { display: flex; flex-direction: column; gap: 1rem; }
+        .detail-main-image { aspect-ratio: 4/3; background: #0f0f0f; border-radius: 4px; overflow: hidden; position: relative; }
+        .detail-main-image img { width: 100%; height: 100%; object-fit: contain; }
+        .detail-thumbnails { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+        .detail-thumb { width: 60px; height: 60px; flex-shrink: 0; border-radius: 4px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; }
+        .detail-thumb.active { border-color: var(--accent); }
+        .detail-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .detail-info { padding: 1rem 0; }
+        .detail-category { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.5rem; }
+        .detail-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.3; }
+        .detail-desc { font-size: 1rem; color: var(--fg-secondary); line-height: 1.8; margin-bottom: 1.5rem; }
+        .detail-meta { display: flex; gap: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .detail-meta-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fg-secondary); margin-bottom: 0.3rem; }
+        .detail-meta-value { font-size: 0.9rem; color: var(--fg-primary); }
+        .detail-actions { display: flex; gap: 0.5rem; margin-top: 1.5rem; }
+        .image-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(0,0,0,0.7); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; }
+        .image-nav:hover { background: var(--accent); border-color: var(--accent); }
+        .image-nav svg { color: white; }
+        .image-nav.prev { left: 1rem; }
+        .image-nav.next { right: 1rem; }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(35px); transition: all 0.9s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } .reveal { opacity: 1; transform: none; } .spotlight-main, .spotlight-left, .spotlight-right { animation: none; } }
+        @media (max-width: 900px) { .biodata-container { grid-template-columns: 1fr; gap: 2.5rem; } .biodata-photo { max-width: 280px; margin: 0 auto; } .education-item { flex-direction: column; gap: 0.8rem; } .education-year { width: auto; } .admin-toggle { bottom: 1rem; right: 1rem; } .detail-content { grid-template-columns: 1fr; } .detail-modal { width: 95vw; } }
+        @media (max-width: 768px) { .items-grid { grid-template-columns: 1fr; } .contact-links { flex-direction: column; align-items: stretch; } .contact-link { justify-content: center; } .skills-grid { grid-template-columns: repeat(2, 1fr); } .hero-description-wrapper { padding: 1.2rem 1.5rem; } }
+        @media (max-width: 480px) { section { padding: 4rem 1.5rem; } .skills-grid { grid-template-columns: 1fr; } .btn { padding: 0.9rem 1.8rem; font-size: 0.75rem; } }
+    </style>
+</head>
+<body>
+    <div class="lighting-layer spotlight-main"></div>
+    <div class="lighting-layer spotlight-left"></div>
+    <div class="lighting-layer spotlight-right"></div>
+    <div class="lighting-layer spotlight-bottom"></div>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+
+    <nav class="nav">
+        <div class="nav-logo" id="navLogo">SA</div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <div class="nav-links" id="navLinks">
+            <span class="admin-badge" id="adminBadge">Admin Mode</span>
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#biodata" class="nav-link">Biodata</a>
+            <a href="#education" class="nav-link">Education</a>
+            <a href="#portfolio" class="nav-link">Portfolio</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </div>
+    </nav>
+
+    <div class="admin-toggle" id="adminToggle"><button class="admin-logout" id="logoutBtn">Logout</button></div>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="font-display hero-name reveal">Sayyidatul Ashfiya'</h1>
+            <p class="hero-title reveal reveal-delay-1">Astronomy Student</p>
+            <p class="hero-subtitle reveal reveal-delay-2">Faculty of Sharia and Law, UIN Sunan Ampel Surabaya</p>
+            <div class="hero-description-wrapper reveal reveal-delay-3">
+                <button class="edit-desc-btn" id="editDescBtn" onclick="openDescriptionModal()">Edit</button>
+                <p class="hero-description-text" id="heroDescriptionText"></p>
+            </div>
+            <div class="hero-buttons reveal reveal-delay-4">
+                <a href="#portfolio" class="btn btn-primary">Lihat Portfolio</a>
+                <a href="#biodata" class="btn btn-secondary">Tentang Saya</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="biodata">
+        <div class="section-header">
+            <span class="section-label reveal">Tentang Saya</span>
+            <h2 class="font-display section-title reveal reveal-delay-1">Biodata</h2>
+            <div class="section-line reveal reveal-delay-2"></div>
+        </div>
+        <div class="biodata-container">
+            <div class="biodata-photo reveal">
+                <div class="photo-frame" id="photoFrame">
+                    <div class="photo-placeholder" id="photoPlaceholder"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span id="photoPlaceholderText">Foto Profil</span></div>
+                    <img id="profilePhoto" style="display:none;" alt="Profile Photo">
+                    <div class="photo-edit-overlay" id="photoEditOverlay"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Ganti Foto</span></div>
+                </div>
+                <input type="file" id="profilePhotoInput" accept="image/*">
+            </div>
+            <div class="biodata-info" id="biodataInfo"></div>
+        </div>
+    </section>
+
+    <section id="education">
+        <div class="section-header">
+            <span class="section-label reveal">Riwayat Pendidikan</span>
+            <h2 class="font-display section-title reveal reveal-delay-1">Education</h2>
+            <div class="section-line reveal reveal-delay-2"></div>
+        </div>
+        <div class="education-container reveal reveal-delay-3"><div class="education-list" id="educationList"></div></div>
+    </section>
+
+    <section id="portfolio">
+        <div class="section-header">
+            <span class="section-label reveal">Karya Saya</span>
+            <h2 class="font-display section-title reveal reveal-delay-1">Portfolio & Pengalaman</h2>
+            <div class="section-line reveal reveal-delay-2"></div>
+        </div>
+        <div class="management-container reveal reveal-delay-3">
+            <div class="tabs-container" id="tabsContainer">
+                <button class="tab-btn active" data-tab="prestasi">Prestasi</button>
+                <button class="tab-btn" data-tab="organisasi">Organisasi</button>
+                <button class="tab-btn" data-tab="kegiatan">Kegiatan</button>
+                <button class="tab-btn" data-tab="design">Desain Grafis</button>
+                <button class="tab-btn" data-tab="fotografi">Fotografi</button>
+                <button class="tab-btn" data-tab="sertifikat">Sertifikat</button>
+                <button class="tab-btn" data-tab="other">Other</button>
+                <button class="tab-btn" data-tab="mywork">My Work</button>
+            </div>
+            <div id="tabContentArea"></div>
+        </div>
+    </section>
+
+    <section id="skills">
+        <div class="section-header">
+            <span class="section-label reveal">Kemampuan</span>
+            <h2 class="font-display section-title reveal reveal-delay-1">Skills</h2>
+            <div class="section-line reveal reveal-delay-2"></div>
+        </div>
+        <div class="skills-container reveal reveal-delay-3"><div class="skills-grid" id="skillsGrid"></div></div>
+    </section>
+
+    <section id="contact">
+        <div class="section-header">
+            <span class="section-label reveal">Hubungi</span>
+            <h2 class="font-display section-title reveal reveal-delay-1">Kontak</h2>
+            <div class="section-line reveal reveal-delay-2"></div>
+        </div>
+        <div class="contact-container">
+            <p class="contact-text reveal reveal-delay-3">Tertarik untuk berkolaborasi atau memiliki pertanyaan? Jangan ragu untuk menghubungi saya melalui platform berikut.</p>
+            <div class="contact-links reveal reveal-delay-4">
+                <a href="mailto:sayyidatulashfiyaa@gmail.com" class="contact-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span>Email</span></a>
+                <a href="https://wa.me/6282331870237" target="_blank" class="contact-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>WhatsApp</span></a>
+                <a href="https://www.instagram.com/stlrnabty" target="_blank" class="contact-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg><span>Instagram</span></a>
+                <a href="https://www.tiktok.com/@aspiaspiic" target="_blank" class="contact-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg><span>TikTok</span></a>
+            </div>
+        </div>
+    </section>
+
+    <footer><p>Sayyidatul Ashfiya' 2026. All rights reserved</p></footer>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="loginModal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">Admin Login</h3><button class="modal-close" id="loginModalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><form id="loginForm"><div class="form-group"><label class="form-label">Password Admin</label><input type="password" class="form-input" id="adminPassword" placeholder="Masukkan password..." required><p class="login-error" id="loginError">Password salah!</p></div><button type="submit" class="form-submit">Login</button></form><p class="login-hint">Klik logo "SA" 3x untuk membuka login admin</p></div></div></div>
+    <div class="modal-overlay" id="biodataModal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title" id="biodataModalTitle">Edit Biodata</h3><button class="modal-close" id="biodataModalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><form id="biodataForm"><input type="hidden" id="biodataField"><div class="form-group"><label class="form-label" id="biodataInputLabel">Nilai</label><textarea class="form-textarea" id="biodataInputValue" placeholder="Masukkan nilai..." style="min-height: 80px;"></textarea></div><button type="submit" class="form-submit">Simpan</button></form></div></div></div>
+    <div class="modal-overlay" id="folderModal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">Tambah Folder Baru</h3><button class="modal-close" id="folderModalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><form id="folderForm"><input type="hidden" id="folderTab"><div class="form-group"><label class="form-label">Nama Folder</label><input type="text" class="form-input" id="folderInputName" placeholder="Contoh: Project 2024" required></div><button type="submit" class="form-submit">Buat Folder</button></form></div></div></div>
+    <div class="modal-overlay" id="renameModal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">Rename Folder</h3><button class="modal-close" id="renameModalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><form id="renameForm"><input type="hidden" id="renameTab"><input type="hidden" id="renameFolderId"><div class="form-group"><label class="form-label">Nama Baru</label><input type="text" class="form-input" id="renameInputName" required></div><button type="submit" class="form-submit">Simpan</button></form></div></div></div>
+    <div class="modal-overlay" id="itemModal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title" id="modalTitle">Tambah Item Baru</h3><button class="modal-close" id="modalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><form id="itemForm"><input type="hidden" id="itemId"><input type="hidden" id="itemTab"><input type="hidden" id="itemFolder"><div class="form-group"><label class="form-label">Judul</label><input type="text" class="form-input" id="itemTitle" placeholder="Masukkan judul..." required></div><div class="form-group"><label class="form-label">Kategori</label><input type="text" class="form-input" id="itemCategory" placeholder="Masukkan kategori..."></div><div class="form-group"><label class="form-label">Deskripsi</label><textarea class="form-textarea" id="itemDesc" placeholder="Deskripsi singkat..."></textarea></div><div class="form-group"><label class="form-label">Gambar (Bisa pilih banyak)</label><div class="file-upload" id="fileUpload"><input type="file" id="itemImage" accept="image/*" multiple><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p class="file-upload-text">Klik untuk upload gambar (bisa pilih banyak)</p><div class="preview-gallery" id="previewGallery"></div><p class="file-count" id="fileCount"></p></div></div><div class="form-group"><label class="form-label">Tahun</label><input type="text" class="form-input" id="itemYear" placeholder="2026"></div><button type="submit" class="form-submit">Simpan</button></form></div></div></div>
+    <div class="modal-overlay" id="educationModal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">Tambah Pendidikan</h3><button class="modal-close" id="educationModalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><form id="educationForm"><input type="hidden" id="educationId"><div class="form-group"><label class="form-label">Nama Institusi</label><input type="text" class="form-input" id="educationName" placeholder="Contoh: Universitas..." required></div><div class="form-group"><label class="form-label">Lokasi</label><input type="text" class="form-input" id="educationLocation" placeholder="Kota, Provinsi"></div><div class="form-group"><label class="form-label">Tahun</label><input type="text" class="form-input" id="educationYear" placeholder="2020-2026"></div><button type="submit" class="form-submit">Simpan</button></form></div></div></div>
+    <div class="modal-overlay" id="skillModal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">Tambah Skill</h3><button class="modal-close" id="skillModalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><form id="skillForm"><input type="hidden" id="skillId"><div class="form-group"><label class="form-label">Nama Skill</label><input type="text" class="form-input" id="skillName" placeholder="Contoh: Photoshop" required></div><div class="form-group"><label class="form-label">Level</label><select class="form-select" id="skillLevel"><option value="Beginner">Beginner</option><option value="Intermediate">Intermediate</option><option value="Advanced">Advanced</option><option value="Expert">Expert</option></select></div><button type="submit" class="form-submit">Simpan</button></form></div></div></div>
+    <div class="modal-overlay" id="descriptionModal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">Edit Deskripsi</h3><button class="modal-close" id="descriptionModalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><form id="descriptionForm"><div class="form-group"><label class="form-label">Deskripsi Anda</label><textarea class="form-textarea" id="descriptionInput" placeholder="Tulis deskripsi tentang diri Anda..." style="min-height: 150px;"></textarea></div><button type="submit" class="form-submit">Simpan</button></form></div></div></div>
+    
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal"><div class="modal-content detail-modal"><div class="modal-header"><h3 class="modal-title" id="detailTitle">Detail</h3><button class="modal-close" id="detailModalClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><div class="modal-body"><div class="detail-content"><div class="detail-gallery"><div class="detail-main-image" id="detailMainImage"><img id="detailImg" src="" alt=""><button type="button" class="image-nav prev" onclick="prevImage()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" class="image-nav next" onclick="nextImage()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button></div><div class="detail-thumbnails" id="detailThumbs"></div></div><div class="detail-info"><span class="detail-category" id="detailCategory"></span><h2 class="detail-title" id="detailItemTitle"></h2><p class="detail-desc" id="detailDesc"></p><div class="detail-meta"><div><div class="detail-meta-label">Tahun</div><div class="detail-meta-value" id="detailYear"></div></div><div><div class="detail-meta-label">Folder</div><div class="detail-meta-value" id="detailFolder"></div></div></div><div class="detail-actions" id="detailActions"><button type="button" class="btn btn-small btn-secondary" onclick="editCurrentItem()">Edit</button><button type="button" class="btn btn-small btn-secondary" style="border-color:#ff4757;color:#ff4757;" onclick="deleteCurrentItem()">Hapus</button></div></div></div></div></div></div>
+
+    <script>
+        const ADMIN_PASSWORD = 'ashfiya2007';
+        const SESSION_KEY = 'isAdminLoggedIn';
+        const TABS = ['prestasi', 'organisasi', 'kegiatan', 'design', 'fotografi', 'sertifikat', 'other', 'mywork'];
+
+        const defaultBiodata = { nama: "Sayyidatul Ashfiya'", ttl: "Tulungagung, 10 April 2007", pendidikan: "Mahasiswa Ilmu Falak, Fakultas Syariah dan Hukum\nUIN Sunan Ampel Surabaya", minat: "Desain Grafis, Fotografi, Astronomi", keahlian: "Graphic Design, Digital Marketing, Content Creation" };
+        const biodataLabels = { nama: "Nama Lengkap", ttl: "Tempat, Tanggal Lahir", pendidikan: "Pendidikan", minat: "Bidang Minat", keahlian: "Keahlian" };
+
+        const defaultPortfolioData = {
+            prestasi: { folders: [], items: [{ id: 1, title: "Juara 1 Design Competition", category: "Kompetisi Nasional", desc: "Meraih juara pertama dalam kompetisi desain poster tingkat nasional.", year: "2026", images: [], folder: null }] },
+            organisasi: { folders: [], items: [{ id: 1, title: "Anggota HMJ Ilmu Falak", category: "Himpunan", desc: "Aktif dalam kegiatan himpunan mahasiswa jurusan Ilmu Falak.", year: "2026", images: [], folder: null }] },
+            kegiatan: { folders: [], items: [{ id: 1, title: "Observasi Astronomi", category: "Kegiatan Akademik", desc: "Partisipasi dalam observasi astronomi dan penelitian bulan.", year: "2026", images: [], folder: null }] },
+            design: { folders: [], items: [{ id: 1, title: "Poster Digital Event", category: "Poster Digital", desc: "Desain poster untuk acara kampus dengan konsep modern minimalis.", year: "2026", images: [], folder: null }, { id: 2, title: "Feed Instagram UMKM", category: "Instagram Feed", desc: "Konten visual untuk media sosial UMKM lokal.", year: "2026", images: [], folder: null }] },
+            fotografi: { folders: [], items: [{ id: 1, title: "Potret Kampus", category: "Potret", desc: "Dokumentasi keindahan arsitektur kampus UIN Sunan Ampel.", year: "2026", images: [], folder: null }] },
+            sertifikat: { folders: [], items: [] },
+            other: { folders: [], items: [] },
+            mywork: { folders: [], items: [] }
+        };
+
+        const defaultEducation = [
+            { id: 1, name: "Al-Hidayah Islamic Early Childhood Education", location: "Samir, Ngunut, Tulungagung", year: "2010-2011" },
+            { id: 2, name: "Al-Hidayah Islamic Kindergarten", location: "Samir, Ngunut, Tulungagung", year: "2011-2013" },
+            { id: 3, name: "Al-Hidayah Islamic Elementary School", location: "Samir, Ngunut, Tulungagung", year: "2013-2019" },
+            { id: 4, name: "MTs Ma'arif NU 2 Blitar", location: "Blitar", year: "2019-2022" },
+            { id: 5, name: "Nurul Ulum Islamic Boarding School", location: "Blitar", year: "2019-2022" },
+            { id: 6, name: "MAN 4 Jombang", location: "Jombang", year: "2022-2025" },
+            { id: 7, name: "Mamba'ul Ma'arif Islamic Boarding School", location: "Denanyar, Jombang", year: "2022-2025" },
+            { id: 8, name: "UIN Sunan Ampel Surabaya", location: "Surabaya", year: "2025-present" },
+            { id: 9, name: "Ma'had Al-Jami'ah UIN Sunan Ampel Surabaya", location: "Surabaya", year: "2025-present" }
+        ];
+
+        const defaultSkills = [
+            { id: 1, name: "Microsoft Excel", level: "Intermediate" },
+            { id: 2, name: "Microsoft Word", level: "Advanced" },
+            { id: 3, name: "Canva", level: "Advanced" },
+            { id: 4, name: "Adobe Photoshop", level: "Intermediate" },
+            { id: 5, name: "Corel Draw", level: "Intermediate" },
+            { id: 6, name: "Adobe Illustrator", level: "Beginner" },
+            { id: 7, name: "Adobe Premiere", level: "Beginner" },
+            { id: 8, name: "CapCut", level: "Advanced" },
+            { id: 9, name: "Blender", level: "Beginner" },
+            { id: 10, name: "PowerPoint", level: "Advanced" }
+        ];
+
+        const defaultDescription = "Mahasiswa Ilmu Falak yang memiliki passion dalam desain grafis dan fotografi. Saya percaya bahwa kreativitas adalah jembatan antara sains dan seni, dan saya selalu berusaha mengekspresikan keindahan alam semesta melalui karya visual.";
+
+        // State
+        let isAdmin = sessionStorage.getItem(SESSION_KEY) === 'true';
+        let biodataData = JSON.parse(localStorage.getItem('biodataData')) || JSON.parse(JSON.stringify(defaultBiodata));
+        let portfolioData = JSON.parse(localStorage.getItem('portfolioData')) || JSON.parse(JSON.stringify(defaultPortfolioData));
+        let educationData = JSON.parse(localStorage.getItem('educationData')) || JSON.parse(JSON.stringify(defaultEducation));
+        let skillsData = JSON.parse(localStorage.getItem('skillsData')) || JSON.parse(JSON.stringify(defaultSkills));
+        let profilePhoto = localStorage.getItem('profilePhoto') || '';
+        let descriptionData = localStorage.getItem('descriptionData') || defaultDescription;
+        let logoClickCount = 0;
+        let logoClickTimer = null;
+        let currentTab = 'prestasi';
+        let currentFolder = null;
+        let editingItemId = null;
+        let editingEducationId = null;
+        let currentImages = [];
+        let detailItem = null;
+        let detailTab = null;
+        let currentImageIndex = 0;
+
+        // DOM Elements
+        const navLogo = document.getElementById('navLogo');
+        const adminBadge = document.getElementById('adminBadge');
+        const adminToggle = document.getElementById('adminToggle');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        const loginModal = document.getElementById('loginModal');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const biodataModal = document.getElementById('biodataModal');
+        const biodataForm = document.getElementById('biodataForm');
+        const folderModal = document.getElementById('folderModal');
+        const folderForm = document.getElementById('folderForm');
+        const renameModal = document.getElementById('renameModal');
+        const renameForm = document.getElementById('renameForm');
+        const itemModal = document.getElementById('itemModal');
+        const itemForm = document.getElementById('itemForm');
+        const educationModal = document.getElementById('educationModal');
+        const educationForm = document.getElementById('educationForm');
+        const skillModal = document.getElementById('skillModal');
+        const skillForm = document.getElementById('skillForm');
+        const descriptionModal = document.getElementById('descriptionModal');
+        const descriptionForm = document.getElementById('descriptionForm');
+        const detailModal = document.getElementById('detailModal');
+        const fileUpload = document.getElementById('fileUpload');
+        const itemImage = document.getElementById('itemImage');
+        const previewGallery = document.getElementById('previewGallery');
+        const fileCount = document.getElementById('fileCount');
+        const profilePhotoInput = document.getElementById('profilePhotoInput');
+        const profilePhotoEl = document.getElementById('profilePhoto');
+        const photoPlaceholder = document.getElementById('photoPlaceholder');
+        const photoFrame = document.getElementById('photoFrame');
+
+        // Save functions
+        function saveBiodataData() { localStorage.setItem('biodataData', JSON.stringify(biodataData)); }
+        function savePortfolioData() { localStorage.setItem('portfolioData', JSON.stringify(portfolioData)); }
+        function saveEducationData() { localStorage.setItem('educationData', JSON.stringify(educationData)); }
+        function saveSkillsData() { localStorage.setItem('skillsData', JSON.stringify(skillsData)); }
+        function saveProfilePhoto(data) { localStorage.setItem('profilePhoto', data); profilePhoto = data; }
+        function saveDescription(data) { localStorage.setItem('descriptionData', data); descriptionData = data; }
+
+        // Admin UI
+        function updateAdminUI() {
+            const editBtns = document.querySelectorAll('.edit-desc-btn, .info-edit-btn');
+            const addCards = document.querySelectorAll('.add-new-card');
+            const addEduBtns = document.querySelectorAll('.add-education-btn');
+            const addSkillCards = document.querySelectorAll('.add-skill-card');
+            const itemActions = document.querySelectorAll('.item-actions');
+            const eduActions = document.querySelectorAll('.education-actions');
+            const skillActions = document.querySelectorAll('.skill-actions');
+            const addFolderBtns = document.querySelectorAll('.add-folder-btn');
+            const detailActions = document.getElementById('detailActions');
+            const photoPlaceholderText = document.getElementById('photoPlaceholderText');
+
+            if (isAdmin) {
+                adminBadge.classList.add('visible');
+                adminToggle.classList.add('visible');
+                editBtns.forEach(btn => btn.classList.add('visible'));
+                addCards.forEach(card => card.classList.add('visible'));
+                addEduBtns.forEach(btn => btn.classList.add('visible'));
+                addSkillCards.forEach(card => card.classList.add('visible'));
+                itemActions.forEach(action => action.classList.add('visible'));
+                eduActions.forEach(action => action.classList.add('visible'));
+                skillActions.forEach(action => action.classList.add('visible'));
+                addFolderBtns.forEach(btn => btn.classList.add('visible'));
+                if (detailActions) detailActions.style.display = 'flex';
+                if (photoFrame) photoFrame.classList.add('editable');
+                if (photoPlaceholderText) photoPlaceholderText.textContent = 'Klik untuk upload foto';
+            } else {
+                adminBadge.classList.remove('visible');
+                adminToggle.classList.remove('visible');
+                editBtns.forEach(btn => btn.classList.remove('visible'));
+                addCards.forEach(card => card.classList.remove('visible'));
+                addEduBtns.forEach(btn => btn.classList.remove('visible'));
+                addSkillCards.forEach(card => card.classList.remove('visible'));
+                itemActions.forEach(action => action.classList.remove('visible'));
+                eduActions.forEach(action => action.classList.remove('visible'));
+                skillActions.forEach(action => action.classList.remove('visible'));
+                addFolderBtns.forEach(btn => btn.classList.remove('visible'));
+                if (detailActions) detailActions.style.display = 'none';
+                if (photoFrame) photoFrame.classList.remove('editable');
+                if (photoPlaceholderText) photoPlaceholderText.textContent = 'Foto Profil';
+            }
+            renderAllGrids();
+        }
+
+        // Login
+        navLogo.addEventListener('click', function() {
+            logoClickCount++;
+            if (logoClickTimer) clearTimeout(logoClickTimer);
+            logoClickTimer = setTimeout(function() { logoClickCount = 0; }, 2000);
+            if (logoClickCount >= 3 && !isAdmin) { logoClickCount = 0; loginModal.classList.add('active'); }
+        });
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
+                isAdmin = true;
+                sessionStorage.setItem(SESSION_KEY, 'true');
+                loginModal.classList.remove('active');
+                loginError.classList.remove('visible');
+                updateAdminUI();
+            } else { loginError.classList.add('visible'); }
+        });
+        logoutBtn.addEventListener('click', function() { isAdmin = false; sessionStorage.removeItem(SESSION_KEY); updateAdminUI(); });
+        document.getElementById('loginModalClose').addEventListener('click', function() { loginModal.classList.remove('active'); });
+
+        // Profile Photo
+        function loadProfilePhoto() { if (profilePhoto) { profilePhotoEl.src = profilePhoto; profilePhotoEl.style.display = 'block'; photoPlaceholder.style.display = 'none'; } }
+        photoFrame.addEventListener('click', function() { if (isAdmin) profilePhotoInput.click(); });
+        profilePhotoInput.addEventListener('change', function(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = function(ev) { saveProfilePhoto(ev.target.result); loadProfilePhoto(); }; reader.readAsDataURL(file); } });
+
+        // Mobile Menu
+        mobileMenuBtn.addEventListener('click', function() { navLinks.classList.toggle('active'); });
+
+        // Render Biodata
+        function renderBiodata() {
+            const container = document.getElementById('biodataInfo');
+            let html = '', delay = 0;
+            for (const [key, value] of Object.entries(biodataData)) {
+                html += `<div class="info-item reveal ${delay > 0 ? 'reveal-delay-' + delay : ''}"><button class="info-edit-btn ${isAdmin ? 'visible' : ''}" onclick="openBiodataModal('${key}')">Edit</button><div class="info-label">${biodataLabels[key]}</div><div class="info-value">${value.replace(/\n/g, '<br>')}</div></div>`;
+                delay = Math.min(delay + 1, 4);
+            }
+            container.innerHTML = html;
+            setTimeout(function() { container.querySelectorAll('.reveal').forEach(el => el.classList.add('visible')); }, 100);
+        }
+        function openBiodataModal(field) { if (!isAdmin) return; document.getElementById('biodataField').value = field; document.getElementById('biodataModalTitle').textContent = 'Edit ' + biodataLabels[field]; document.getElementById('biodataInputLabel').textContent = biodataLabels[field]; document.getElementById('biodataInputValue').value = biodataData[field] || ''; biodataModal.classList.add('active'); }
+        document.getElementById('biodataModalClose').addEventListener('click', function() { biodataModal.classList.remove('active'); });
+        biodataForm.addEventListener('submit', function(e) { e.preventDefault(); if (!isAdmin) return; biodataData[document.getElementById('biodataField').value] = document.getElementById('biodataInputValue').value; saveBiodataData(); renderBiodata(); biodataModal.classList.remove('active'); });
+
+        // Render Education
+        function renderEducation() {
+            const list = document.getElementById('educationList');
+            let html = educationData.map(edu => `<div class="education-item"><div class="education-year">${edu.year}</div><div class="education-content"><h3 class="education-name">${edu.name}</h3><p class="education-location">${edu.location}</p><div class="education-actions ${isAdmin ? 'visible' : ''}"><button class="edu-btn" onclick="editEducation(${edu.id})">Edit</button><button class="edu-btn delete" onclick="deleteEducation(${edu.id})">Hapus</button></div></div></div>`).join('');
+            html += `<button class="add-education-btn ${isAdmin ? 'visible' : ''}" onclick="openEducationModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Tambah Pendidikan</button>`;
+            list.innerHTML = html;
+        }
+        function openEducationModal() { if (!isAdmin) return; editingEducationId = null; educationForm.reset(); document.getElementById('educationId').value = ''; educationModal.classList.add('active'); }
+        function editEducation(id) { if (!isAdmin) return; editingEducationId = id; const edu = educationData.find(e => e.id === id); if (!edu) return; document.getElementById('educationId').value = id; document.getElementById('educationName').value = edu.name; document.getElementById('educationLocation').value = edu.location; document.getElementById('educationYear').value = edu.year; educationModal.classList.add('active'); }
+        function deleteEducation(id) { if (!isAdmin) return; if (confirm('Yakin hapus?')) { educationData = educationData.filter(e => e.id !== id); saveEducationData(); renderEducation(); } }
+        document.getElementById('educationModalClose').addEventListener('click', function() { educationModal.classList.remove('active'); });
+        educationForm.addEventListener('submit', function(e) { e.preventDefault(); if (!isAdmin) return; const id = editingEducationId || Date.now(); const eduData = { id, name: document.getElementById('educationName').value, location: document.getElementById('educationLocation').value, year: document.getElementById('educationYear').value }; if (editingEducationId) { const idx = educationData.findIndex(e => e.id === editingEducationId); if (idx > -1) educationData[idx] = eduData; } else { educationData.push(eduData); } saveEducationData(); renderEducation(); educationModal.classList.remove('active'); });
+
+        // Render Skills
+        function renderSkills() {
+            const grid = document.getElementById('skillsGrid');
+            let html = skillsData.map(skill => `<div class="skill-card"><div class="skill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3 class="skill-name">${skill.name}</h3><span class="skill-level">${skill.level}</span><div class="skill-actions ${isAdmin ? 'visible' : ''}"><button class="skill-delete" onclick="deleteSkill(${skill.id})">Hapus</button></div></div>`).join('');
+            html += `<div class="add-skill-card ${isAdmin ? 'visible' : ''}" onclick="openSkillModal()"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><p style="font-size: 0.8rem; color: var(--fg-secondary);">Tambah Skill</p></div>`;
+            grid.innerHTML = html;
+        }
+        function openSkillModal() { if (!isAdmin) return; skillForm.reset(); document.getElementById('skillId').value = ''; skillModal.classList.add('active'); }
+        function deleteSkill(id) { if (!isAdmin) return; if (confirm('Yakin hapus?')) { skillsData = skillsData.filter(s => s.id !== id); saveSkillsData(); renderSkills(); } }
+        document.getElementById('skillModalClose').addEventListener('click', function() { skillModal.classList.remove('active'); });
+        skillForm.addEventListener('submit', function(e) { e.preventDefault(); if (!isAdmin) return; skillsData.push({ id: Date.now(), name: document.getElementById('skillName').value, level: document.getElementById('skillLevel').value }); saveSkillsData(); renderSkills(); skillModal.classList.remove('active'); });
+
+        // Description
+        function renderDescription() { document.getElementById('heroDescriptionText').textContent = descriptionData; }
+        function openDescriptionModal() { if (!isAdmin) return; document.getElementById('descriptionInput').value = descriptionData; descriptionModal.classList.add('active'); }
+        document.getElementById('descriptionModalClose').addEventListener('click', function() { descriptionModal.classList.remove('active'); });
+        descriptionForm.addEventListener('submit', function(e) { e.preventDefault(); if (!isAdmin) return; saveDescription(document.getElementById('descriptionInput').value); renderDescription(); descriptionModal.classList.remove('active'); });
+
+        // Portfolio - Tabs
+        function setupTabs() {
+            const container = document.getElementById('tabsContainer');
+            container.innerHTML = TABS.map(t => `<button class="tab-btn ${t === currentTab ? 'active' : ''}" data-tab="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</button>`).join('');
+            container.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentTab = this.dataset.tab;
+                    currentFolder = null;
+                    container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    renderGrid(currentTab);
+                });
+            });
+        }
+
+        // Portfolio - Grid
+        function renderGrid(tab) {
+            const area = document.getElementById('tabContentArea');
+            if (!area) return;
+            
+            const data = portfolioData[tab] || { folders: [], items: [] };
+            const folders = data.folders || [];
+            const items = data.items || [];
+            
+            // Header
+            let headerHtml = '';
+            if (currentFolder) {
+                const folder = folders.find(f => f.id === currentFolder);
+                headerHtml = `<div class="folder-header visible"><button class="folder-back-btn" onclick="goToRoot('${tab}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Kembali</button><span class="folder-name">${folder ? folder.name : ''}</span><div class="folder-actions"><button class="folder-btn" onclick="renameCurrentFolder('${tab}')">Rename</button><button class="folder-btn danger" onclick="deleteCurrentFolder('${tab}')">Hapus Folder</button></div></div>`;
+            } else if (isAdmin) {
+                headerHtml = `<div class="add-folder-btn visible" onclick="openFolderModal('${tab}')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>Tambah Folder Baru</div>`;
+            }
+
+            // Grid
+            let gridHtml = '<div class="items-grid">';
+            
+            // Folders (only at root)
+            if (!currentFolder) {
+                folders.forEach(f => {
+                    const count = items.filter(i => i.folder === f.id).length;
+                    gridHtml += `<div class="folder-card" onclick="openFolder('${tab}', ${f.id})"><div class="folder-card-content"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><p class="folder-card-name">${f.name}</p><p class="folder-card-count">${count} item</p></div><div class="folder-card-actions"><button class="folder-card-btn" onclick="event.stopPropagation(); renameFolderById('${tab}', ${f.id})">Rename</button><button class="folder-card-btn danger" onclick="event.stopPropagation(); deleteFolderById('${tab}', ${f.id})">Hapus</button></div></div>`;
+                });
+            }
+
+            // Items
+            const filteredItems = currentFolder ? items.filter(i => i.folder === currentFolder) : items.filter(i => !i.folder);
+            filteredItems.forEach(item => {
+                const imgCount = (item.images || []).length;
+                gridHtml += `<article class="item-card" onclick="openDetail('${tab}', ${item.id})"><div class="item-image">${(item.images && item.images[0]) ? `<img src="${item.images[0]}" alt="${item.title}">` : `<div class="item-image-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>`}${imgCount > 1 ? `<span class="item-badge">+${imgCount - 1}</span>` : ''}</div><div class="item-content"><span class="item-category">${item.category || ''}</span><h3 class="item-title">${item.title}</h3><p class="item-desc">${item.desc || ''}</p>${item.year ? `<span class="item-year">${item.year}</span>` : ''}</div></article>`;
+            });
+
+            // Add button
+            gridHtml += `<div class="add-new-card ${isAdmin ? 'visible' : ''}" onclick="openAddModal('${tab}')"><div class="add-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><p class="add-text">Tambah Item Baru</p></div>`;
+            gridHtml += '</div>';
+
+            area.innerHTML = headerHtml + gridHtml;
+        }
+
+        function renderAllGrids() { renderGrid(currentTab); setupTabs(); }
+
+        // Folder functions
+        function openFolder(tab, id) { currentFolder = id; renderGrid(tab); }
+        function goToRoot(tab) { currentFolder = null; renderGrid(tab); }
+        function openFolderModal(tab) { if (!isAdmin) return; document.getElementById('folderTab').value = tab; document.getElementById('folderInputName').value = ''; folderModal.classList.add('active'); }
+        document.getElementById('folderModalClose').addEventListener('click', function() { folderModal.classList.remove('active'); });
+        folderForm.addEventListener('submit', function(e) { e.preventDefault(); if (!isAdmin) return; const tab = document.getElementById('folderTab').value; if (!portfolioData[tab].folders) portfolioData[tab].folders = []; portfolioData[tab].folders.push({ id: Date.now(), name: document.getElementById('folderInputName').value }); savePortfolioData(); renderGrid(tab); folderModal.classList.remove('active'); });
+
+        function renameCurrentFolder(tab) { if (!currentFolder) return; renameFolderById(tab, currentFolder); }
+        function renameFolderById(tab, id) { const f = (portfolioData[tab].folders || []).find(x => x.id === id); if (!f) return; document.getElementById('renameTab').value = tab; document.getElementById('renameFolderId').value = id; document.getElementById('renameInputName').value = f.name; renameModal.classList.add('active'); }
+        document.getElementById('renameModalClose').addEventListener('click', function() { renameModal.classList.remove('active'); });
+        renameForm.addEventListener('submit', function(e) { e.preventDefault(); if (!isAdmin) return; const tab = document.getElementById('renameTab').value; const id = parseInt(document.getElementById('renameFolderId').value); const f = (portfolioData[tab].folders || []).find(x => x.id === id); if (f) f.name = document.getElementById('renameInputName').value; savePortfolioData(); renderGrid(tab); renameModal.classList.remove('active'); });
+
+        function deleteCurrentFolder(tab) { if (!currentFolder) return; if (!confirm('Hapus folder dan semua isinya?')) return; portfolioData[tab].folders = (portfolioData[tab].folders || []).filter(f => f.id !== currentFolder); portfolioData[tab].items = (portfolioData[tab].items || []).filter(i => i.folder !== currentFolder); currentFolder = null; savePortfolioData(); renderGrid(tab); }
+        function deleteFolderById(tab, id) { if (!confirm('Hapus folder?')) return; portfolioData[tab].folders = (portfolioData[tab].folders || []).filter(f => f.id !== id); portfolioData[tab].items = (portfolioData[tab].items || []).filter(i => i.folder !== id); savePortfolioData(); renderGrid(tab); }
+
+        // Item functions
+        function openAddModal(tab) { if (!isAdmin) return; currentTab = tab; editingItemId = null; currentImages = []; document.getElementById('modalTitle').textContent = 'Tambah Item'; itemForm.reset(); document.getElementById('itemId').value = ''; document.getElementById('itemTab').value = tab; document.getElementById('itemFolder').value = currentFolder || ''; previewGallery.innerHTML = ''; fileCount.textContent = ''; itemModal.classList.add('active'); }
+        function editItem(tab, id) { if (!isAdmin) return; currentTab = tab; editingItemId = id; const item = (portfolioData[tab].items || []).find(i => i.id === id); if (!item) return; document.getElementById('modalTitle').textContent = 'Edit Item'; document.getElementById('itemId').value = id; document.getElementById('itemTab').value = tab; document.getElementById('itemFolder').value = item.folder || ''; document.getElementById('itemTitle').value = item.title; document.getElementById('itemCategory').value = item.category || ''; document.getElementById('itemDesc').value = item.desc || ''; document.getElementById('itemYear').value = item.year || ''; currentImages = item.images || []; renderPreviewGallery(); itemModal.classList.add('active'); }
+        function closeItemModal() { itemModal.classList.remove('active'); editingItemId = null; currentImages = []; }
+        function deleteItem(tab, id) { if (!isAdmin) return; if (confirm('Hapus item?')) { portfolioData[tab].items = (portfolioData[tab].items || []).filter(i => i.id !== id); savePortfolioData(); renderGrid(tab); } }
+        document.getElementById('modalClose').addEventListener('click', closeItemModal);
+
+        // Multi-upload
+        fileUpload.addEventListener('click', function(e) { if (e.target.tagName !== 'INPUT') itemImage.click(); });
+        itemImage.addEventListener('change', function(e) { Array.from(e.target.files).forEach(file => { const reader = new FileReader(); reader.onload = function(ev) { currentImages.push(ev.target.result); renderPreviewGallery(); }; reader.readAsDataURL(file); }); itemImage.value = ''; });
+        function renderPreviewGallery() { previewGallery.innerHTML = currentImages.map((src, i) => `<div class="preview-item"><img src="${src}"><button type="button" class="preview-remove" onclick="removePreview(${i})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>`).join(''); fileCount.textContent = currentImages.length > 0 ? currentImages.length + ' gambar' : ''; }
+        function removePreview(i) { currentImages.splice(i, 1); renderPreviewGallery(); }
+
+        itemForm.addEventListener('submit', function(e) {
+            e.preventDefault(); if (!isAdmin) return;
+            const tab = document.getElementById('itemTab').value;
+            const id = editingItemId || Date.now();
+            const data = { id, title: document.getElementById('itemTitle').value, category: document.getElementById('itemCategory').value, desc: document.getElementById('itemDesc').value, year: document.getElementById('itemYear').value, images: currentImages, folder: document.getElementById('itemFolder').value ? parseInt(document.getElementById('itemFolder').value) : currentFolder };
+            if (!portfolioData[tab].items) portfolioData[tab].items = [];
+            if (editingItemId) { const idx = portfolioData[tab].items.findIndex(i => i.id === editingItemId); if (idx > -1) portfolioData[tab].items[idx] = data; }
+            else portfolioData[tab].items.push(data);
+            savePortfolioData(); renderGrid(tab); closeItemModal();
+        });
+
+        // Detail Modal
+        function openDetail(tab, id) {
+            const item = (portfolioData[tab].items || []).find(i => i.id === id);
+            if (!item) return;
+            detailItem = item; detailTab = tab; currentImageIndex = 0;
+            document.getElementById('detailTitle').textContent = item.title;
+            document.getElementById('detailCategory').textContent = item.category || '';
+            document.getElementById('detailItemTitle').textContent = item.title;
+            document.getElementById('detailDesc').textContent = item.desc || '';
+            document.getElementById('detailYear').textContent = item.year || '';
+            const folder = item.folder ? (portfolioData[tab].folders || []).find(f => f.id === item.folder) : null;
+            document.getElementById('detailFolder').textContent = folder ? folder.name : 'Root';
+            updateDetailImage();
+            renderDetailThumbs();
+            detailModal.classList.add('active');
+        }
+        function updateDetailImage() { if (detailItem && detailItem.images && detailItem.images[0]) document.getElementById('detailImg').src = detailItem.images[currentImageIndex] || ''; }
+        function renderDetailThumbs() { document.getElementById('detailThumbs').innerHTML = (detailItem.images || []).map((src, i) => `<div class="detail-thumb ${i === currentImageIndex ? 'active' : ''}" onclick="setImage(${i})"><img src="${src}"></div>`).join(''); }
+        function setImage(i) { currentImageIndex = i; updateDetailImage(); renderDetailThumbs(); }
+        function prevImage() { if (!detailItem || !detailItem.images || !detailItem.images.length) return; currentImageIndex = (currentImageIndex - 1 + detailItem.images.length) % detailItem.images.length; updateDetailImage(); renderDetailThumbs(); }
+        function nextImage() { if (!detailItem || !detailItem.images || !detailItem.images.length) return; currentImageIndex = (currentImageIndex + 1) % detailItem.images.length; updateDetailImage(); renderDetailThumbs(); }
+        function closeDetailModal() { detailModal.classList.remove('active'); detailItem = null; detailTab = null; }
+        document.getElementById('detailModalClose').addEventListener('click', closeDetailModal);
+        function editCurrentItem() { if (!detailItem || !detailTab) return; closeDetailModal(); editItem(detailTab, detailItem.id); }
+        function deleteCurrentItem() { if (!detailItem || !detailTab) return; if (confirm('Hapus item?')) { portfolioData[detailTab].items = (portfolioData[detailTab].items || []).filter(i => i.id !== detailItem.id); savePortfolioData(); closeDetailModal(); renderGrid(detailTab); } }
+
+        // Modal close on overlay click & ESC
+        [loginModal, biodataModal, folderModal, renameModal, itemModal, educationModal, skillModal, descriptionModal, detailModal].forEach(m => { m.addEventListener('click', function(e) { if (e.target === m) m.classList.remove('active'); }); });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') [loginModal, biodataModal, folderModal, renameModal, itemModal, educationModal, skillModal, descriptionModal, detailModal].forEach(m => m.classList.remove('active')); });
+
+        // Scroll reveal
+        function initScrollReveal() { const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 }); document.querySelectorAll('.reveal').forEach(el => obs.observe(el)); }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', function(e) { e.preventDefault(); const t = document.querySelector(this.getAttribute('href')); if (t) { navLinks.classList.remove('active'); t.scrollIntoView({ behavior: 'smooth' }); } }); });
+
+        // Init
+        document.addEventListener('DOMContentLoaded', function() { loadProfilePhoto(); renderBiodata(); setupTabs(); renderGrid('prestasi'); renderEducation(); renderSkills(); renderDescription(); updateAdminUI(); initScrollReveal(); });
+    </script>
+</body>
+</html>
